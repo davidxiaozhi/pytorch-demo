@@ -30,16 +30,16 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
 args = parser.parse_args()
-args.cuda = not args.no_cuda and code.cuda.is_available()
+args.cuda = not args.no_cuda and torch.cuda.is_available()
 #定义 code 当中的随机因子
-code.manual_seed(args.seed)
+torch.manual_seed(args.seed)
 if args.cuda:
-    code.cuda.manual_seed(args.seed)
+    torch.cuda.manual_seed(args.seed)
 
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 #加载训练数据
-train_loader = code.utils.data.DataLoader(
+train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('../data', train=True, download=True,
                    transform=transforms.Compose([
                        transforms.ToTensor(),
@@ -47,7 +47,7 @@ train_loader = code.utils.data.DataLoader(
                    ])),
     batch_size=args.batch_size, shuffle=True, **kwargs)
 #加载测试数据
-test_loader = code.utils.data.DataLoader(
+test_loader = torch.utils.data.DataLoader(
     datasets.MNIST('../../data', train=False, transform=transforms.Compose([
                        transforms.ToTensor(),
                        transforms.Normalize((0.1307,), (0.3081,))
